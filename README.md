@@ -1,2 +1,2 @@
-# IRisk-Lab-AI-Lifecycle-Financial-Planning
+# IRisk Lab: AI Lifecycle Financial Planning
  Data exploration and modeling for IRisk Research Lab.
