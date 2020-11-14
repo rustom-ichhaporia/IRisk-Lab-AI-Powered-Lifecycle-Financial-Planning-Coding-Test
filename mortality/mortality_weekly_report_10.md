@@ -4,7 +4,9 @@
 Last week, I registered for HAL access so that I could run the hyperparameter optimization script remotely because my computer overheated and could not run it for the appropriate number of trials. I was able to upload my files and run the first half of the script, but unfortunately when running the `fmin` optimization function, the program crashes after the first of 150 loops with the error: 
 
 ```
-lightgbm.basic.LightGBMError: Cannot change bin_construct_sample_cnt after constructed Dataset handle.
+lightgbm.basic.LightGBMError: Cannot change 
+bin_construct_sample_cnt after constructed 
+Dataset handle.
 ```
 
 After googling the error, the only information I could find was a GitHub issue in which someone faced the same error message[^1]. Although the issue had been resolved and merged into the master branch of LightGBM nearly a year ago, one commenter explained: 
