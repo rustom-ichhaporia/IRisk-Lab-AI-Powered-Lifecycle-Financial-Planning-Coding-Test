@@ -9,4 +9,8 @@ Below I have pasted the results for the first 50 trials. The first classificatio
 
 After finishing the model, I plan to write a method that allows the input of user data for the prediction of the age distribution of death. Please let me know if anything else is desired. I am sorry for the short length of my report, but all I have been able to do other than commenting my code is waiting for the model to complete running each time. 
 
-![Classification report results](/Users/rustomichhaporia/GitHub/irisk-lab/mortality/week_11_picture.png)
+![Classification report results](./week_11_picture.png)
+
+Linear model of top ~20 (logistic regression)
+Data cleaning, merge high level categorical, check for outliers
+Various probability thresholds, list precision/f1 of distribution, find best threshold
