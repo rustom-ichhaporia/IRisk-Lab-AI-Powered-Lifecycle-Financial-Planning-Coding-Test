@@ -4,23 +4,40 @@ author:
     - Rustom Ichhaporia [`rustomi2@illinois.edu`][^*]
 date: 2020-12-12
 description: Final report for AI-Powered Lifecycle Financial Project research. 
-abstract: How long will you live? This age-old question has extensive implications in the billions of risk estimations made by individuals planning for the future every day. Although never certain, a stronger approximation of an indidual's lifespan can enable more reliable future planning and  greater sense of stability
+abstract: How long will you live? This age-old question has extensive implications in the billions of risk estimations made by individuals planning for the future every day. Although never certain, a stronger approximation of an indidual's lifespan can enable more reliable future planning and a greater sense of stability than none at all. We reviewed publicly available datasets containing socioeconomic information about U.S. citizens to create a naïve model that predicts the likelihood of a person's death at different ages given characteristics such as location, income, place of birth, and more. The results are explained and visualized in this report. While more work must be done to achieve a more accurate predictor, this work provides a baseline for lifespan prediction in coordination with other financial models to aid financial planning. 
 
-# geometry: margin=1in
+geometry: margin=1in
 documentclass: article
 classoption: 
     - twocolumn
 numbersections: true
-appendix: jfa;slkdfj
 ---
 
 <!-- Document -->
 
 # Background
 
+## Desired Features
 
+Lifespan prediction is important to a broad variety of scientific and industrial fields. Each field in which it is relevant requires a different scope, accuracy, and set of input features. For example, the medical field might look at a patient's weight and blood pressure to determine their risk of passing away from heart disease. Millions of specific, dynamic variables affect an individual's lifespan, ranging from minute physical details to sociological environments to occupational conditions. Naturally, it is currently impossible to accurately measure all of these variables for an individual, let alone every individual. Thus, we must let the domain of our application dictate which variables we use, as well as the size and diversity of the dataset we use to predict lifespan. 
 
-# Dataset Selection
+If we were to make a perfect predictor of mortality, some of the high-level features we might consider include: 
+
+- General biographical information (e.g. age, sex)
+- Location 
+- Occupational and residential environment conditions
+- Income
+- Medical information
+
+In particular, the most likely available features would fall into the groups of socioeconomic and medical. Unfortunately, in our dataset search, finding a dataset that combined socioeconomic status, medical information, and lifespan information was difficult to come by. There are datasets linking two of those three features, but a comprehensive, large scale study documenting all three with useful sample sizes was not found. As a result, some compromises had to be made in favoring the socioeconomic data over medical data, as that is more relevant and available in actuarial settings. 
+
+## Dataset Selection
+
+### CDC Dataset
+
+The first dataset that we attempted to use was the Mortality Multiple Cause-of-Death dataset created by the U.S. Center for Disease Control (CDC)[^1].
+
+### NLMS Dataset
 
 # Preprocessing 
 
@@ -35,7 +52,6 @@ Last week, I registered for HAL access so that I could run the hyperparameter op
 
 ## Limitations 
 
-[^1]
 One significant drawback of the approach taken to estimating 
 
 \newpage
@@ -127,4 +143,4 @@ print(classification_report(np.round(pred_probs + 0.25), y_test, sample_weight=X
 
 [^*]: This research project was completed during my time as a research intern at the Illinois Risk Lab (https://irisklabuiuc.wixsite.com/) during the Fall of 2020. My research was a part of the AI-Powered Lifecycle Financial Planning project, which is still under development. I appreciate the help of Dr. Runhuan Feng, Dr. Frank Quan, Dr. Yong Xie, Dr. Linfeng Zhang, and my fellow interns throughout the process. Thank you!
 
-[^1]: https://github.com/microsoft/LightGBM/issues/2696
+[^1]: https://www.cdc.gov/nchs/nvss/mortality_public_use_data.htm
