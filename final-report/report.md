@@ -75,15 +75,15 @@ The appendix of this report contains the code for training the model and saving 
 
 The preprocessed data was then used to fit multiple models with the object predicting mortality likelihood at different ages of individuals on a macroscopic scale. The two models used were `LogisticRegression` from the `scikit-learn` package[^3] and `LGBMClassifier` from Microsoft's LightGBM package[^4]. 
 
-## Computation
-
-To facilitate computation, we used resources from the HAL Cluster provided by the National Center for Supercomputing (NCSA)[^5]. 
-
 ## Models
 
 ## Metrics
 
 ## Hyperparameter Optimization
+
+## Computation
+
+To facilitate computation, we used resources from the HAL Cluster provided by the National Center for Supercomputing (NCSA)[^5]. Batch jobs were submitted on the virtual machine using `.swb` files, an example of which is included in the appendix. The training of the LightGBM model with cross-validation and hyperparameter tuning may require over 24 hours, which is the time limit for batch jobs submitted to HAL, so the data from the cross validation procedure should be cached halfway through the process before restarting it with a new job in which the cached data is loaded. 
 
 # Results
 
