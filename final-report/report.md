@@ -35,9 +35,11 @@ In particular, the most likely available features would fall into the groups of 
 
 ### CDC Dataset
 
-The first dataset that we attempted to use was the Mortality Multiple Cause-of-Death dataset created by the U.S. Center for Disease Control (CDC)[^1].
+The first dataset that we attempted to use was the Mortality Multiple Cause-of-Death dataset created by the U.S. Center for Disease Control (CDC)[^1]. While this dataset contained several of the features that we wanted to include in our analysis, it was still missing a lot of the socioeconomic factors that we were looking for and the medical information it contained was difficult to parse. After a few weeks of attempting to work with this data, we decided to search for a new dataset that better matched the needs of the research. 
 
 ### NLMS Dataset
+
+The best dataset that we found within our timeframe was from the National Longitudinal Mortality Study (NLMS) created by the United States Census Bureau[^2]. The NLMS 
 
 # Preprocessing 
 
@@ -144,3 +146,5 @@ print(classification_report(np.round(pred_probs + 0.25), y_test, sample_weight=X
 [^*]: This research project was completed during my time as a research intern at the Illinois Risk Lab (https://irisklabuiuc.wixsite.com/) during the Fall of 2020. My research was a part of the AI-Powered Lifecycle Financial Planning project, which is still under development. I appreciate the help of Dr. Runhuan Feng, Dr. Frank Quan, Dr. Yong Xie, Dr. Linfeng Zhang, and my fellow interns throughout the process. Thank you!
 
 [^1]: https://www.cdc.gov/nchs/nvss/mortality_public_use_data.htm
+
+[^2]: https://www.census.gov/topics/research/nlms.html
