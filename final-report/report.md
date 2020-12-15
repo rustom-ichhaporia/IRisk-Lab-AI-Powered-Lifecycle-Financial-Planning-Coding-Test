@@ -11,6 +11,11 @@ documentclass: article
 classoption: 
     - twocolumn
 numbersections: true
+
+header-includes:
+    # Use to break long lines of code onto multiple lines
+    - \usepackage{fvextra}
+    - \DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines,breakanywhere,commandchars=\\\{\}}
 ---
 
 <!-- Document -->
@@ -54,7 +59,7 @@ Each entry had a corresponding weight. The purpose of the weight was to attempt 
 
 # Preprocessing 
 
-After selecting the dataset, we began the steps of preprocessing the data before creating a model. A number of steps that were taken have been omitted from this summary, some of which were kept and some of which were discarded through the research process. 
+After selecting the dataset, we began the steps of preprocessing the data for model creation. A number of steps that were taken have been omitted from this summary, some of which were kept and some of which were discarded through the research process. 
 
 Roughly half of the variables in the NLMS dataset had very high missing rates. Although tactical imputation can be used for values with medium levels of missing data, many of these features were missing more than half of their entries. Simply removing all entries with missing values would shrink the dataset tenfold and very likely skew the data, so I instead opted to drop features with high missing rates. The cutoff point identified was that features with `>20%` of their data missing were removed. The remaining missing values were much easier to handle and discard. 
 
@@ -68,6 +73,18 @@ The appendix of this report contains the code for training the model and saving 
 
 # Modeling
 
+The preprocessed data was then used to fit multiple models with the object predicting mortality likelihood at different ages of individuals on a macroscopic scale. The two models used were `LogisticRegression` from the `scikit-learn` package[^3] and `LGBMClassifier` from Microsoft's LightGBM package[^4]. 
+
+## Computation
+
+To facilitate computation, we used resources from the HAL Cluster provided by the National Center for Supercomputing (NCSA)[^5]. 
+
+## Models
+
+## Metrics
+
+## Hyperparameter Optimization
+
 # Results
 
 Last week, I registered for HAL access so that I could run the hyperparameter optimization script remotely because my computer overheated and could not run it for the appropriate number of trials. I was able to upload my files and run the first half of the script, but unfortunately when running the `fmin` optimization function, the program crashes after the first of 150 loops with the error: 
@@ -75,12 +92,14 @@ Last week, I registered for HAL access so that I could run the hyperparameter op
 
 ## Limitations 
 
-One significant drawback of the approach taken to estimating 
+Several significant drawbacks of our approach to estimating lifespan using this dataset and model are recognized. 
+
+One significant drawback of the approach taken to estimating lifespan in this dataset was the 
 
 \newpage
 # Appendix
 
-<!-- 
+
 <style>
   .col1 {
     columns: 1;
@@ -159,13 +178,19 @@ pred_probs = model.predict_proba(X_test.drop(columns=['wt']))[:, 1]
 print(classification_report(np.round(pred_probs + 0.25), y_test, sample_weight=X_test['wt']))
 
 ```
-</div> -->
+</div>
 
 
 <!-- Footnotes -->
 
 [^*]: This research project was completed during my time as a research intern at the Illinois Risk Lab (https://irisklabuiuc.wixsite.com/) during the Fall of 2020. My research was a part of the AI-Powered Lifecycle Financial Planning project, which is still under development. I appreciate the help of Dr. Runhuan Feng, Dr. Frank Quan, Dr. Yong Xie, Dr. Linfeng Zhang, and my fellow interns throughout the process. Thank you!
 
-[^1]: https://www.cdc.gov/nchs/nvss/mortality_public_use_data.htm
+[^1]: https://www.cdc.gov/nchs/nvss/mmds.htm
 
 [^2]: https://www.census.gov/topics/research/nlms.html
+
+[^3]: https://scikit-learn.org/stable/index.html
+
+[^4]: https://github.com/microsoft/LightGBM
+
+[^5]: https://wiki.ncsa.illinois.edu/display/ISL20/HAL+cluster
