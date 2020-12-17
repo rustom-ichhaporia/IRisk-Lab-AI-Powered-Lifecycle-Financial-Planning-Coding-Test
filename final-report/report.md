@@ -73,9 +73,17 @@ The appendix of this report contains the code for training the model and saving 
 
 # Modeling
 
-The preprocessed data was then used to fit multiple models with the object predicting mortality likelihood at different ages of individuals on a macroscopic scale. The two models used were `LogisticRegression` from the `scikit-learn` package[^3] and `LGBMClassifier` from Microsoft's LightGBM package[^4]. 
+The preprocessed data was then used to fit multiple models with the objective of predicting mortality likelihood at different ages of individuals on a macroscopic scale. The two models used were `LogisticRegressionCV` from the `scikit-learn` package[^3] and `LGBMClassifier` from Microsoft's LightGBM package[^4]. 
+
+## Oversampling
+
+The mortality data from our dataset was naturally highly imbalanced. Over the 10-year follow-up period, there existed a ratio of approximately 19 survivals for each death. This can cause binary classification models to underfit the data and simply classify every survival and death entry as a survival, therefore reaching a ~95% accuracy. To combat this, we used the Synthetic Minority Oversampling Technique (SMOTE) from the `imblearn` library[^5]. After splitting the data into a large training and small testing subset, the technique is applied only to the training data. This resamples and imputes the training data so that it shifts to a 1:1 death to survival ratio, allowing the classification model to more accurately discern deaths when scored on the test data. 
 
 ## Models
+
+Both models took in a DataFrame of solely numeric features (categorical variables having been dummified) and a binary target array representing death or survival during the 10-year follow-up period of the study. 
+
+Each model was trained using cross validation and hyperparameter optimization over a feature space defined in the included code. The models were trained over 150 iterations of the optimization and results were saved in `.csv` and `.pkl` files. 
 
 ## Metrics
 
@@ -83,22 +91,30 @@ The preprocessed data was then used to fit multiple models with the object predi
 
 ## Computation
 
-To facilitate computation, we used resources from the HAL Cluster provided by the National Center for Supercomputing (NCSA)[^5]. Batch jobs were submitted on the virtual machine using `.swb` files, an example of which is included in the appendix. The training of the LightGBM model with cross-validation and hyperparameter tuning may require over 24 hours, which is the time limit for batch jobs submitted to HAL, so the data from the cross validation procedure should be cached halfway through the process before restarting it with a new job in which the cached data is loaded. 
+To facilitate computation, we used resources from the HAL Cluster provided by the National Center for Supercomputing (NCSA)[^6]. Batch jobs were submitted on the virtual machine using `.swb` files, an example of which is included in the appendix. The training of the LightGBM model with cross-validation and hyperparameter tuning may require over 24 hours, which is the time limit for batch jobs submitted to HAL, so the data from the cross validation procedure should be cached halfway through the process before restarting it with a new job in which the cached data is loaded. 
 
 # Results
 
-Last week, I registered for HAL access so that I could run the hyperparameter optimization script remotely because my computer overheated and could not run it for the appropriate number of trials. I was able to upload my files and run the first half of the script, but unfortunately when running the `fmin` optimization function, the program crashes after the first of 150 loops with the error: 
+## Scoring
 
+
+
+## Prediction Framework
+
+![Sample of Mortality Probability Distributions](./plots/age_proj.png)
+
+![Probability Density Plot by Age for Overall Prediction](./plots/age_dist.png)
+
+<!-- [Batch Job Script](./job.md) -->
 
 ## Limitations 
 
 Several significant drawbacks of our approach to estimating lifespan using this dataset and model are recognized. 
 
-One significant drawback of the approach taken to estimating lifespan in this dataset was the 
-
 \newpage
-# Appendix
+\onecolumn
 
+# Appendix
 
 <style>
   .col1 {
@@ -193,4 +209,6 @@ print(classification_report(np.round(pred_probs + 0.25), y_test, sample_weight=X
 
 [^4]: https://github.com/microsoft/LightGBM
 
-[^5]: https://wiki.ncsa.illinois.edu/display/ISL20/HAL+cluster
+[^5]: https://pypi.org/project/imbalanced-learn/
+
+[^6]: https://wiki.ncsa.illinois.edu/display/ISL20/HAL+cluster
