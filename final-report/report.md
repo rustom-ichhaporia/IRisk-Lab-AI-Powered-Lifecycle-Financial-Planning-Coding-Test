@@ -16,6 +16,7 @@ header-includes:
     # Use to break long lines of code onto multiple lines
     - \usepackage{fvextra}
     - \DefineVerbatimEnvironment{Highlighting}{Verbatim}{breaklines,breakanywhere,commandchars=\\\{\}}
+    - \usepackage{supertabular}
 ---
 
 <!-- Document -->
@@ -89,11 +90,11 @@ Each model was trained using cross validation and hyperparameter optimization ov
 
 ## Metrics
 
-The models were evaluated on several metrics. The precision, recall, and F1 score (weighted average of precision and recall) of each model's predictions on test data were compared. Despite the improved performance of the model from the application of SMOTE, the F1 scores of the models on death classification were short of 0.5 while the F1 scores on the survival classification were in excess of 0.95. Consideration was also given to the area under the receiver operating characteristic curve (ROC AUC score), with the best model reaching an ROC AUC score of 0.89 after beginning at 0.4 before optimization. A sample of the classifications were given below. 
+The models were evaluated on several metrics. The precision, recall, and F1 score (weighted average of precision and recall) of each model's predictions on test data were compared. Despite the improved performance of the model from the application of SMOTE, the F1 scores of the models on death classification were short of 0.5 while the F1 scores on the survival classification were in excess of 0.95. Consideration was also given to the area under the receiver operating characteristic curve (ROC AUC score), with the best model reaching an ROC AUC score of 0.89 after beginning at 0.4 before optimization. A sample of the metrics for the logistic regression model is shown in the appendix. The model's predictions perform best with the addition of a 0.25 constant to the predicted probabilities of the model's output. In risk management, it is conventionally always best to slightly oversave than to undersave, so we prioritized removing false negatives over removing false positives. 
 
 ## Hyperparameter Optimization
 
-
+To finely tune the model, a hyperparameter optimization script was with cross-validation over a feature space of hyperparameters defined in the code. While the hyperparameter optimization failed to produce significant increases in F1 scores on the test data, it led to an increase in the ROC AUC score of roughly 0.42. 
 
 ## Computation
 
@@ -101,36 +102,44 @@ To facilitate computation, we used resources from the HAL Cluster provided by th
 
 # Results
 
-## Scoring
-
-
+After evaluating the models, it remains unclear which model is the best for further use. Both models display similar precision, recall, and F1 scores on test data. While the LightGBM model has a higher ROC AUC score, it takes several days and multiple script batch jobs to complete hyperparameter optimization, while the logistic regression model runs in a few hours. If time and computation resources are not a concern, then it may be better to opt for the LightGBM classification model. 
 
 ## Prediction Framework
 
+For the purpose of understanding the model's output and checking them against conventional assumptions, we created a function to which a pandas DataFrame representing a set of individual's data (including dummified categorical variables) is passed and mortality probability predictions are output for each individual at age intervals 10 years apart until age 90, holding all other variables constant. Figure 1 displays a sample output from some of the test data. 
+
 ![Sample of Mortality Probability Distributions](./plots/age_proj.png)
+
+Each line represents a different individual's mortality probability spread. Individuals whose lines fall near the bottom of the distribution are likely subject to socioeconomic conditions that improve quality of life and lengthen lifespan, such as high income, safe areas, and large numbers of household members. Individuals whose lines fall near the top of the distribution and are thus more likely to die at an earlier age are likely subject to the opposite socioeconomic conditions. 
 
 ![Probability Density Plot by Age for Overall Prediction](./plots/age_dist.png)
 
-<!-- [Batch Job Script](./job.md) -->
+Shown in Figure 2 is a probability density plot for an aggregated collection of the model's output. Ages below 40 are omitted because they are extremely narrow distributions that obscure the wider distributions when displayed on the same plot. At age 40, the distribution is still quite narrow and centered close to zero. This aligns with out expectations of model output. In the United States, death at ages 40 and below is highly unlikely compared to death at later stages in life. For each decade increase, the peak of the probability distribution shifts rightward and downward. The average age of death in the United States is roughly 77, which aligns with our observations from the plot. At age 90, the peak of the distribution has shifted well past 0.5, meaning a majority of people will have died before the age of 90. The peak of the distribution for age 80 is slightly below 0.5, which aligns perfectly with the average age of death, which is slightly below 80. This reality check provides confirmation that the model is outputting reasonably accurate predictions. 
 
 ## Limitations 
 
-Several significant drawbacks of our approach to estimating lifespan using this dataset and model are recognized. 
+Several significant drawbacks of our approach to estimating lifespan using this dataset and model are recognized. The data used in the study is collected from a range of time periods in the past half decade, the most recent being 10 years old at the time of the most recent census in 2010. However, mortality rates have not shifted dramatically since then. Additionally, in testing our data, age was held constant while other variables, such as income, were not. This does not follow patterns of lifetime income increase and relocation to which the nation's population is subject. In general, strong assumptions were made about the data and the process that should be revisited if a stronger predictive tool is desired. 
+
+## Future
+
+The models generated as a part of this research are for exploratory and academic purposes only. They should not be taken as highly precise, particularly because lifespan prediction is far from a precise science at its current stage. However, the process documented here may be able to better aid future research that wishes to explore lifespan prediction further an apply it to predictive risk management on a larger scale. 
 
 \newpage
 \onecolumn
 
 # Appendix
 
-<style>
-  .col1 {
-    columns: 1;
-  }
-</style>
+## Metric Output
 
-<div class="col1">
+| Classification | Precision | Recall | F1 Score | Support |
+|----------------|-----------|--------|----------|---------|
+| 0.0 (death)    | 0.98      | 0.96   | 0.97     | 429742  |
+| 1.0 (survival) | 0.43      | 0.47   | 0.45     | 17154   |
+| Accuracy       |           |        | 0.94     | 446896  |
+| Macro Avg      | 0.64      | 0.69   | 0.66     | 446896  |
+| Weighted Avg   | 0.95      | 0.94   | 0.95     | 446896  |
 
-#### **`script.py`** {-}
+## **`script.py`** {-}
 
 ```{.python .numberLines}
 '''Imports'''
@@ -200,8 +209,6 @@ pred_probs = model.predict_proba(X_test.drop(columns=['wt']))[:, 1]
 print(classification_report(np.round(pred_probs + 0.25), y_test, sample_weight=X_test['wt']))
 
 ```
-</div>
-
 
 <!-- Footnotes -->
 
