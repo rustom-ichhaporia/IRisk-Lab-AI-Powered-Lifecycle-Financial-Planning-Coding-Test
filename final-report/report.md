@@ -139,7 +139,9 @@ The models generated as a part of this research are for exploratory and academic
 | Macro Avg      | 0.64      | 0.69   | 0.66     | 446896  |
 | Weighted Avg   | 0.95      | 0.94   | 0.95     | 446896  |
 
-## **`script.py`** {-}
+\newpage
+
+## **`model_sample.py`** {-}
 
 ```{.python .numberLines}
 '''Imports'''
@@ -149,14 +151,11 @@ import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
 
-from sklearn.linear_model import LogisticRegression
 from sklearn.linear_model import LogisticRegressionCV
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report
 from sklearn.metrics import roc_auc_score
 from sklearn.metrics import precision_recall_curve
-from sklearn.metrics import plot_precision_recall_curve
-from sklearn.metrics import plot_roc_curve
 
 from imblearn.over_sampling import SMOTE
 
@@ -208,6 +207,66 @@ pred_probs = model.predict_proba(X_test.drop(columns=['wt']))[:, 1]
 
 print(classification_report(np.round(pred_probs + 0.25), y_test, sample_weight=X_test['wt']))
 
+```
+
+\newpage
+
+## **`output_function.py`** {-}
+
+```{.python .numberLines}
+'''Imports'''
+
+import pandas as pd
+import numpy as np
+
+df = pd.read_csv('./test_data.csv')
+
+'''Output Function'''
+
+AGE_INTERVAL = 10
+MAX_AGE = 100
+
+def mortality_distributions(people: pd.DataFrame):
+    # Handle series instead of DataFrame
+    if isinstance(people, pd.Series):
+        people = people.to_frame().T
+
+    # Remove weight column if present
+    if 'wt' in people.columns: 
+        people = people.drop(columns=['wt'])
+    
+    # Create list of ages to generate mortality predictions
+    ages = [num for num in range(0, MAX_AGE, AGE_INTERVAL)]
+    output = pd.DataFrame().reindex(columns=ages)
+
+    # Reset age of individual and calculate mortality prediction
+    for age in ages: 
+        people['age'] = age
+        output[age] = model.predict_proba(people)[:, 1]
+
+    # Copy indices
+    output = output.set_index(people.index)
+    
+    return output
+
+print(mortality_distributions(df))
+```
+
+\newpage
+
+## **`sample_job.swb`** {-}
+
+```{.swb .numberLines}
+#!/bin/bash
+#SBATCH --job-name="model_sample"
+#SBATCH --output="model_sample.%j.%N.out"
+#SBATCH --partition=cpun1
+
+module load wmlce
+pip install imblearn
+pip install lightgbm==2.3.0
+pip install hyperopt==0.2.5
+python model_sample.py
 ```
 
 <!-- Footnotes -->
