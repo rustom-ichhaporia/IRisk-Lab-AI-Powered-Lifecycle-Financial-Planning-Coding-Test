@@ -1,4 +1,4 @@
-# IRisk Lab: AI-Powered Socioeconomic Prediction of Lifespan
+# AI-Powered Socioeconomic Prediction of Lifespan
 
 This repository contains exploratory code and documentation for my research on lifespan prediction during the fall of 2020 at the [Illinois Risk Lab](https://irisklabuiuc.wixsite.com/actsi/associates).
 
