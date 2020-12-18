@@ -83,11 +83,17 @@ The mortality data from our dataset was naturally highly imbalanced. Over the 10
 
 Both models took in a DataFrame of solely numeric features (categorical variables having been dummified) and a binary target array representing death or survival during the 10-year follow-up period of the study. 
 
+The LightGBM classifier is a tree-based model that outputs binary probabilities. The logistic regression is a linear-based standard model with parameters specified in the code. 
+
 Each model was trained using cross validation and hyperparameter optimization over a feature space defined in the included code. The models were trained over 150 iterations of the optimization and results were saved in `.csv` and `.pkl` files. 
 
 ## Metrics
 
+The models were evaluated on several metrics. The precision, recall, and F1 score (weighted average of precision and recall) of each model's predictions on test data were compared. Despite the improved performance of the model from the application of SMOTE, the F1 scores of the models on death classification were short of 0.5 while the F1 scores on the survival classification were in excess of 0.95. Consideration was also given to the area under the receiver operating characteristic curve (ROC AUC score), with the best model reaching an ROC AUC score of 0.89 after beginning at 0.4 before optimization. A sample of the classifications were given below. 
+
 ## Hyperparameter Optimization
+
+
 
 ## Computation
 
