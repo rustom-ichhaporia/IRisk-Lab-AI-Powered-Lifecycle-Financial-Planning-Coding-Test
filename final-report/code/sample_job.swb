@@ -1,0 +1,10 @@
+#!/bin/bash
+#SBATCH --job-name="model_sample"
+#SBATCH --output="model_sample.%j.%N.out"
+#SBATCH --partition=cpun1
+
+module load wmlce
+pip install imblearn
+pip install lightgbm==2.3.0
+pip install hyperopt==0.2.5
+python logistic_regression_model.py
